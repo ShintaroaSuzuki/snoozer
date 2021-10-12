@@ -6,18 +6,26 @@ import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 
-export default function App() {
-  const isLoadingComplete = useCachedResources();
-  const colorScheme = useColorScheme();
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import store, { persistor } from './store';
 
-  if (!isLoadingComplete) {
-    return null;
-  } else {
-    return (
-      <SafeAreaProvider>
-        <Navigation colorScheme={colorScheme} />
-        <StatusBar />
-      </SafeAreaProvider>
-    );
-  }
+export default function App() {
+    const isLoadingComplete = useCachedResources();
+    const colorScheme = useColorScheme();
+
+    if (!isLoadingComplete) {
+        return null;
+    } else {
+        return (
+            <Provider store={store}>
+                <PersistGate loading={null} persistor={persistor}>
+                    <SafeAreaProvider>
+                        <Navigation colorScheme={colorScheme} />
+                        <StatusBar />
+                    </SafeAreaProvider>
+                </PersistGate>
+            </Provider>
+        );
+    }
 }
